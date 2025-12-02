@@ -1,134 +1,16 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.types import *
 
 spark = SparkSession.builder \
     .appName("FlightsDataFast") \
     .getOrCreate()
 
-schema = StructType([
-    StructField("Year", IntegerType(), True),
-    StructField("Quarter", IntegerType(), True),
-    StructField("Month", IntegerType(), True),
-    StructField("DayofMonth", IntegerType(), True),
-    StructField("DayOfWeek", IntegerType(), True),
-    StructField("FlightDate", DateType(), True),
-    StructField("Reporting_Airline", StringType(), True),
-    StructField("DOT_ID_Reporting_Airline", IntegerType(), True),
-    StructField("IATA_CODE_Reporting_Airline", StringType(), True),
-    StructField("Tail_Number", StringType(), True),
-    StructField("Flight_Number_Reporting_Airline", IntegerType(), True),
-    StructField("OriginAirportID", IntegerType(), True),
-    StructField("OriginAirportSeqID", IntegerType(), True),
-    StructField("OriginCityMarketID", IntegerType(), True),
-    StructField("Origin", StringType(), True),
-    StructField("OriginCityName", StringType(), True),
-    StructField("OriginState", StringType(), True),
-    StructField("OriginStateFips", IntegerType(), True),
-    StructField("OriginStateName", StringType(), True),
-    StructField("OriginWac", IntegerType(), True),
-    StructField("DestAirportID", IntegerType(), True),
-    StructField("DestAirportSeqID", IntegerType(), True),
-    StructField("DestCityMarketID", IntegerType(), True),
-    StructField("Dest", StringType(), True),
-    StructField("DestCityName", StringType(), True),
-    StructField("DestState", StringType(), True),
-    StructField("DestStateFips", IntegerType(), True),
-    StructField("DestStateName", StringType(), True),
-    StructField("DestWac", IntegerType(), True),
-    StructField("CRSDepTime", IntegerType(), True),
-    StructField("DepTime", IntegerType(), True),
-    StructField("DepDelay", DoubleType(), True),
-    StructField("DepDelayMinutes", DoubleType(), True),
-    StructField("DepDel15", DoubleType(), True),
-    StructField("DepartureDelayGroups", IntegerType(), True),
-    StructField("DepTimeBlk", StringType(), True),
-    StructField("TaxiOut", DoubleType(), True),
-    StructField("WheelsOff", IntegerType(), True),
-    StructField("WheelsOn", IntegerType(), True),
-    StructField("TaxiIn", DoubleType(), True),
-    StructField("CRSArrTime", IntegerType(), True),
-    StructField("ArrTime", IntegerType(), True),
-    StructField("ArrDelay", DoubleType(), True),
-    StructField("ArrDelayMinutes", DoubleType(), True),
-    StructField("ArrDel15", DoubleType(), True),
-    StructField("ArrivalDelayGroups", IntegerType(), True),
-    StructField("ArrTimeBlk", StringType(), True),
-    StructField("Cancelled", DoubleType(), True),
-    StructField("CancellationCode", StringType(), True),
-    StructField("Diverted", DoubleType(), True),
-    StructField("CRSElapsedTime", DoubleType(), True),
-    StructField("ActualElapsedTime", DoubleType(), True),
-    StructField("AirTime", DoubleType(), True),
-    StructField("Flights", DoubleType(), True),
-    StructField("Distance", DoubleType(), True),
-    StructField("DistanceGroup", IntegerType(), True),
-    StructField("CarrierDelay", DoubleType(), True),
-    StructField("WeatherDelay", DoubleType(), True),
-    StructField("NASDelay", DoubleType(), True),
-    StructField("SecurityDelay", DoubleType(), True),
-    StructField("LateAircraftDelay", DoubleType(), True),
-    StructField("FirstDepTime", IntegerType(), True),
-    StructField("TotalAddGTime", DoubleType(), True),
-    StructField("LongestAddGTime", DoubleType(), True),
-    StructField("DivAirportLandings", IntegerType(), True),
-    StructField("DivReachedDest", DoubleType(), True),
-    StructField("DivActualElapsedTime", DoubleType(), True),
-    StructField("DivArrDelay", DoubleType(), True),
-    StructField("DivDistance", DoubleType(), True),
-    StructField("Div1Airport", StringType(), True),
-    StructField("Div1AirportID", IntegerType(), True),
-    StructField("Div1AirportSeqID", IntegerType(), True),
-    StructField("Div1WheelsOn", IntegerType(), True),
-    StructField("Div1TotalGTime", DoubleType(), True),
-    StructField("Div1LongestGTime", DoubleType(), True),
-    StructField("Div1WheelsOff", IntegerType(), True),
-    StructField("Div1TailNum", StringType(), True),
-    StructField("Div2Airport", StringType(), True),
-    StructField("Div2AirportID", IntegerType(), True),
-    StructField("Div2AirportSeqID", IntegerType(), True),
-    StructField("Div2WheelsOn", IntegerType(), True),
-    StructField("Div2TotalGTime", DoubleType(), True),
-    StructField("Div2LongestGTime", DoubleType(), True),
-    StructField("Div2WheelsOff", IntegerType(), True),
-    StructField("Div2TailNum", StringType(), True),
-    StructField("Div3Airport", StringType(), True),
-    StructField("Div3AirportID", StringType(), True),
-    StructField("Div3AirportSeqID", StringType(), True),
-    StructField("Div3WheelsOn", StringType(), True),
-    StructField("Div3TotalGTime", StringType(), True),
-    StructField("Div3LongestGTime", StringType(), True),
-    StructField("Div3WheelsOff", StringType(), True),
-    StructField("Div3TailNum", StringType(), True),
-    StructField("Div4Airport", StringType(), True),
-    StructField("Div4AirportID", StringType(), True),
-    StructField("Div4AirportSeqID", StringType(), True),
-    StructField("Div4WheelsOn", StringType(), True),
-    StructField("Div4TotalGTime", StringType(), True),
-    StructField("Div4LongestGTime", StringType(), True),
-    StructField("Div4WheelsOff", StringType(), True),
-    StructField("Div4TailNum", StringType(), True),
-    StructField("Div5Airport", StringType(), True),
-    StructField("Div5AirportID", StringType(), True),
-    StructField("Div5AirportSeqID", StringType(), True),
-    StructField("Div5WheelsOn", StringType(), True),
-    StructField("Div5TotalGTime", StringType(), True),
-    StructField("Div5LongestGTime", StringType(), True),
-    StructField("Div5WheelsOff", StringType(), True),
-    StructField("Div5TailNum", StringType(), True),
-    StructField("_c109", StringType(), True)
-])
+df = spark.read.csv(
+    "/teamspace/studios/this_studio/Project/data/csv_flight/report_201*_*.csv",
+    header=True,
+    inferSchema=True
+)
 
-
-years = ["2017", "2018"]
-parquet_base = "data/parquet_flight/"
-
-for y in years:
-    print(f"Processing year {y}...")
-    df_year = spark.read.option("header", "true") \
-                        .schema(schema) \
-                        .csv(f"data/csv_flight/*{y}*.csv")
-    df_year.repartition(8).write.mode("overwrite").parquet(f"{parquet_base}{y}/")
-
-# Read all Parquet files at once (fast concatenation)
-df_all = spark.read.parquet(f"{parquet_base}*")
-df_all.show(5)
+df.coalesce(1).write \
+    .option("header", True) \
+    .mode("overwrite") \
+    .csv("/teamspace/studios/this_studio/Project/data/report_2017_2018")
